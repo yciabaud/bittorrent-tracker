@@ -1,7 +1,7 @@
 var Client = require('../')
 var common = require('./common')
 var test = require('tape')
-var wrtc = require('wrtc')
+var wrtc
 
 var infoHash = '4cb67059ed6bd08362da625b3ae77f6f4a075705'
 var peerId = new Buffer('01234567890123456789')
@@ -115,6 +115,11 @@ function serverTest (t, serverType, serverFamily) {
   })
 }
 
+test('create daemon', function (t) {
+  wrtc = require('electron-webrtc')()
+  wrtc.electronDaemon.once('ready', t.end)
+})
+
 test('websocket server', function (t) {
   serverTest(t, 'ws', 'inet')
 })
@@ -129,4 +134,10 @@ test('http ipv6 server', function (t) {
 
 test('udp server', function (t) {
   serverTest(t, 'udp', 'inet')
+})
+
+// cleanup
+test('cleanup electron-eval daemon', function (t) {
+  wrtc.close()
+  t.end()
 })
