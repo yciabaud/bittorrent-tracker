@@ -17,8 +17,7 @@ function testClientStart (t, serverType) {
       infoHash: fixtures.leaves.parsedTorrent.infoHash,
       announce: announceUrl,
       peerId: peerId1,
-      port: port,
-      wrtc: {}
+      port: port
     })
 
     if (serverType === 'ws') common.mockWebsocketTracker(client)

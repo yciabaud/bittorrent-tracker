@@ -7,7 +7,6 @@ var extend = require('xtend')
 var inherits = require('inherits')
 var once = require('once')
 var parallel = require('run-parallel')
-var Peer = require('simple-peer')
 var uniq = require('uniq')
 var url = require('url')
 
@@ -88,8 +87,6 @@ function Client (opts) {
   })
   announce = uniq(announce)
 
-  var webrtcSupport = self._wrtc !== false && (!!self._wrtc || Peer.WEBRTC_SUPPORT)
-
   self._trackers = announce
     .map(function (announceUrl) {
       var protocol = url.parse(announceUrl).protocol
@@ -98,7 +95,7 @@ function Client (opts) {
         return new HTTPTracker(self, announceUrl)
       } else if (protocol === 'udp:' && typeof UDPTracker === 'function') {
         return new UDPTracker(self, announceUrl)
-      } else if ((protocol === 'ws:' || protocol === 'wss:') && webrtcSupport) {
+      } else if (protocol === 'ws:' || protocol === 'wss:') {
         // Skip ws:// trackers on https:// sites because they throw SecurityError
         if (protocol === 'ws:' && typeof window !== 'undefined' &&
             window.location.protocol === 'https:') {
